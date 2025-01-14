@@ -5,7 +5,7 @@
   "description": "Fragments UI testing web app",
   "source": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", 
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel",
     "build": "parcel build"
   },
@@ -17,5 +17,9 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "parcel": "^2.13.3"
+  },
+  "dependencies": {
+    "oidc-client-ts": "^3.1.0",
+    "openid-client": "^6.1.7"
   }
 }
