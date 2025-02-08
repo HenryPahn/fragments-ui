@@ -17,3 +17,8 @@ npm run build
 
 > [!NOTE]
 > Parcel is used to bundle JS, manage env variables, and provide hot-reloading(Same to nodemon). Running build command is mandatory for updating any change in the fragment ui project. Otherwise, it is only running the result from the last build. 
+
+## Environtment file 
+- Switch API URL between local host and AWS EC2 instance: 
+    API_URL
+
