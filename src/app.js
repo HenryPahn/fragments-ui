@@ -24,8 +24,6 @@ async function init() {
 
   // Do an authenticated request to the fragments API server and log the result
   const userFragments = await getUserFragments(user); // display all user fragment
-  
-  console.log(userFragments)
 
   // show up all private sections
   userSection.hidden = false;

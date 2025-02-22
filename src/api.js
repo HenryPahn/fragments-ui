@@ -15,7 +15,9 @@ export async function getUserFragments(user) {
       // Generate headers with the proper Authorization bearer token to pass.
       // We are using the `authorizationHeaders()` helper method we defined
       // earlier, to automatically attach the user's ID token.
-      headers: user.authorizationHeaders(),
+      headers: {
+        ...user.authorizationHeaders(),
+      },
     });
     if (!res.ok) {
       throw new Error(`${res.status} ${res.statusText}`);
