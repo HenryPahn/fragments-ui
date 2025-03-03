@@ -1,7 +1,7 @@
 // src/app.js
 
 import { signIn, getUser } from './auth';
-import { getUserFragments, createFragment } from './api';
+import { createFragment } from './api';
 
 async function init() {
   // Get our UI elements
@@ -23,7 +23,7 @@ async function init() {
   }
 
   // Do an authenticated request to the fragments API server and log the result
-  const userFragments = await getUserFragments(user); // display all user fragment
+  // const userFragments = await getUserFragments(user); // display all user fragment
 
   // show up all private sections
   userSection.hidden = false;
