@@ -132,3 +132,6 @@ dist
 # Parcel 
 dist/
 .parcel-cache/
+
+# docker access token 
+.docker/
