@@ -11,6 +11,7 @@ async function init() {
   const getFragmentsButton = document.querySelector('#getFragmentsButton');
   const fragmentsList = document.querySelector('#fragmentsList');
   const noOfFragments = document.querySelector('#noOfFragments');
+  const fragmentSection = document.querySelector('#fragmentSection');
   let warning = document.querySelector('#warning');
   let fileName = document.querySelector('#fileName')
 
@@ -44,7 +45,6 @@ async function init() {
       // { data: { status: "ok", fragment: { ... } } }
       const fragmentMetaDataResponse = await getFragmentMetaData(user, fragmentIds[i]);
       const fragment = fragmentMetaDataResponse.fragment;
-      console.log(`here: ${JSON.stringify(fragmentMetaDataResponse.fragment)}`)
       // JSON.stringify()
       const fragmentDiv = document.createElement('div');
       fragmentDiv.classList.add('fragment-item');
@@ -71,6 +71,7 @@ async function init() {
   getFragmentsButton.hidden = false;
   fragmentsList.hidden = false;
   noOfFragments.hidden = false;
+  fragmentSection.hidden = false;
 
   showFragments()
 
