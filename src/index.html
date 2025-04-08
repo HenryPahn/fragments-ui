@@ -56,9 +56,7 @@
 <body>
   <h1>Fragments UI</h1>
   <section>
-    <nav>
-      <button id="login">Login</button>
-    </nav>
+    <nav><button id="login">Login</button> <button id="logout">Logout</button></nav>
   </section>
   <section hidden id="user">
     <h2>Hello <span class="username"></span>!</h2>
@@ -86,8 +84,11 @@
     </form>
   </section>
 
-  <button id="getFragmentsButton" hidden>Refresh</button> <span id="noOfFragments" hidden></span>
-  <section id="fragmentsList" hidden></section>
+  <section id="fragmentSection" hidden>
+    <button id="getFragmentsButton" hidden>Refresh</button> <span id="noOfFragments" hidden></span>
+    <section id="fragmentsList" hidden></section>
+  </section>
+
 </body>
 
 </html>
