@@ -6,6 +6,7 @@ const cognitoAuthConfig = {
   authority: `https://cognito-idp.us-east-1.amazonaws.com/${process.env.AWS_COGNITO_POOL_ID}`,
   client_id: process.env.AWS_COGNITO_CLIENT_ID,
   redirect_uri: process.env.OAUTH_SIGN_IN_REDIRECT_URL,
+  post_logout_redirect_uri: process.env.OAUTH_SIGN_IN_REDIRECT_URL,
   response_type: 'code',
   scope: 'phone openid email',
   // no revoke of "access token" (https://github.com/authts/oidc-client-ts/issues/262)
@@ -23,6 +24,14 @@ export async function signIn() {
   // Trigger a redirect to the Cognito auth page, so user can authenticate
   await userManager.signinRedirect();
   // console.log("Triggered")
+}
+
+export async function signOut() {
+  await userManager.removeUser();
+  const clientId = process.env.AWS_COGNITO_CLIENT_ID;
+  const logoutUri = process.env.OAUTH_SIGN_IN_REDIRECT_URL;
+  const cognitoDomain = process.env.AWS_COGNITO_DOMAIN;
+  window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
 }
 
 // Create a simplified view of the user, with an extra method for creating the auth headers

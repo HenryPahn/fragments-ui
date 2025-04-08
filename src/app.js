@@ -1,12 +1,13 @@
 // src/app.js
 
-import { signIn, getUser } from './auth';
+import { signIn, getUser, signOut } from './auth';
 import { createFragment, getUserFragments, getFragmentMetaData } from './api';
 
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
+  const logoutBtn = document.querySelector('#logout');
   const fragmentForm = document.querySelector('#createFragment');
   const getFragmentsButton = document.querySelector('#getFragmentsButton');
   const fragmentsList = document.querySelector('#fragmentsList');
@@ -25,8 +26,20 @@ async function init() {
   const user = await getUser();
 
   if (!user) {
+    userSection.hidden = true;
+    fragmentForm.hidden = true;
+    getFragmentsButton.hidden = true;
+    fragmentsList.hidden = true;
+    noOfFragments.hidden = true;
+    fragmentSection.hidden = true;
+    logoutBtn.disabled = true;
     return;
   }
+
+  logoutBtn.onclick = () => {
+    // Sign-in via the Amazon Cognito Hosted UI (requires redirects), see:
+    signOut();
+  };
 
   async function showFragments() {
     // Do an authenticated request to the fragments API server and log the result
@@ -60,7 +73,7 @@ async function init() {
       `;
 
       // Append the fragment details to the list section.
-      fragmentsListSection.appendChild(fragmentDiv);      
+      fragmentsListSection.appendChild(fragmentDiv);
     }
 
   }
