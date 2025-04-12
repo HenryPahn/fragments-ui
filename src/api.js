@@ -74,3 +74,43 @@ export async function getFragmentMetaData(user, fragmentId) {
     console.error('Unable to call GET /v1/fragment', { err });
   }
 }
+
+export async function deleteFragment(user, fragmentId) {
+  console.log(`Deleting user fragment with id: ${fragmentId}`);
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+      method: "DELETE",
+      headers: {
+        ...user.authorizationHeaders(),
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    console.log('Successfully delete user fragment');
+    return true;
+  } catch (err) {
+    console.error('Unable to call GET /v1/fragment', { err });
+  }
+}
+
+export async function updateFragment(user, fragmentId, contentType, fragmentData) {
+  console.log('Update a fragment...');
+  try {
+    const res = await fetch(`${apiUrl}/v1/fragments/${fragmentId}`, {
+      method: "PUT",
+      headers: {
+        ...user.authorizationHeaders(contentType),
+      },
+      body: fragmentData,
+    });
+    if (!res.ok) {
+      throw new Error(`${res.status} ${res.statusText}`);
+    }
+    const data = await res.json();
+    console.log('Fragment is successfully updated', { data });
+    return data;
+  } catch (err) {
+    console.error('Unable to call GET /v1/fragment', { err });
+  }
+}
