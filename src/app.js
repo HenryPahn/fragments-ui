@@ -1,18 +1,31 @@
 // src/app.js
 
-import { signIn, getUser } from './auth';
-import { createFragment, getUserFragments, getFragmentMetaData } from './api';
+import { signIn, getUser, signOut } from './auth';
+import { createFragment, getUserFragments, getFragmentMetaData, deleteFragment, updateFragment } from './api';
 
 async function init() {
   // Get our UI elements
   const userSection = document.querySelector('#user');
   const loginBtn = document.querySelector('#login');
+  const logoutBtn = document.querySelector('#logout');
   const fragmentForm = document.querySelector('#createFragment');
   const getFragmentsButton = document.querySelector('#getFragmentsButton');
   const fragmentsList = document.querySelector('#fragmentsList');
   const noOfFragments = document.querySelector('#noOfFragments');
+  const fragmentSection = document.querySelector('#fragmentSection');
   let warning = document.querySelector('#warning');
   let fileName = document.querySelector('#fileName')
+
+  const updateSection = document.querySelector('#updateFragment');
+  const updateIdSpan = document.querySelector('#updateFragmentId');
+  const updateTypeSpan = document.querySelector('#updateFragmentType');
+  const updateSelectBox = document.querySelector('#updateSelectBox');
+  const updateDropZone = document.querySelector('#update_drop_zone');
+  const updateFileName = document.querySelector('#updateFileName');
+  const updateWarning = document.querySelector('#updateWarning');
+
+  let currentUpdateId = '';
+  let updateData = '';
 
   // Wire up event handlers to deal with login and logout.
   loginBtn.onclick = () => {
@@ -24,8 +37,20 @@ async function init() {
   const user = await getUser();
 
   if (!user) {
+    userSection.hidden = true;
+    fragmentForm.hidden = true;
+    getFragmentsButton.hidden = true;
+    fragmentsList.hidden = true;
+    noOfFragments.hidden = true;
+    fragmentSection.hidden = true;
+    logoutBtn.disabled = true;
     return;
   }
+
+  logoutBtn.onclick = () => {
+    // Sign-in via the Amazon Cognito Hosted UI (requires redirects), see:
+    signOut();
+  };
 
   async function showFragments() {
     // Do an authenticated request to the fragments API server and log the result
@@ -44,26 +69,93 @@ async function init() {
       // { data: { status: "ok", fragment: { ... } } }
       const fragmentMetaDataResponse = await getFragmentMetaData(user, fragmentIds[i]);
       const fragment = fragmentMetaDataResponse.fragment;
-      console.log(`here: ${JSON.stringify(fragmentMetaDataResponse.fragment)}`)
       // JSON.stringify()
       const fragmentDiv = document.createElement('div');
       fragmentDiv.classList.add('fragment-item');
 
       // Set the inner HTML to show details.
-      fragmentDiv.innerHTML = `
+      function showData() {
+        return `
         <p><strong>ID:</strong> ${fragment.id}</p>
         <p><strong>Owner ID:</strong> ${fragment.ownerId}</p>
         <p><strong>Created:</strong> ${new Date(fragment.created).toLocaleString()}</p>
         <p><strong>Updated:</strong> ${new Date(fragment.updated).toLocaleString()}</p>
         <p><strong>Type:</strong> ${fragment.type}</p>
         <p><strong>Size:</strong> ${fragment.size} bytes</p>
+        <button class="delete-button" data-id="${fragment.id}">Delete</button>
+        <button class="edit-button" data-id="${fragment.id}">Edit</button>
       `;
+      }
+
+      fragmentDiv.innerHTML = showData();
+
+      const deleteFunc = async () => {
+        await deleteFragment(user, fragment.id);
+      }
+
+      const deleteBtn = fragmentDiv.querySelector('.delete-button');
+      deleteBtn.addEventListener('click', () => {
+        deleteFunc();
+      });
+
+      const editBtn = fragmentDiv.querySelector('.edit-button');
+      editBtn.addEventListener('click', () => {
+        updateSection.hidden = false;
+        currentUpdateId = fragment.id;
+        updateIdSpan.innerText = currentUpdateId;
+      });      
 
       // Append the fragment details to the list section.
-      fragmentsListSection.appendChild(fragmentDiv);      
+      fragmentsListSection.appendChild(fragmentDiv);
     }
-
   }
+
+  updateDropZone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  });
+  
+  updateDropZone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    const files = event.dataTransfer.files;
+    if (files.length !== 1) {
+      console.error("Only one file allowed");
+      updateWarning.style.color = 'red';
+      return;
+    }
+    updateWarning.style.color = 'black';
+    const file = files[0];
+    updateFileName.innerText = file.name;
+  
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      updateData = e.target.result;
+    };
+    reader.readAsText(file); // adjust if needed
+  });
+
+  updateSection.addEventListener('submit', async (event) => {
+    event.preventDefault();
+  
+    const newType = updateSelectBox.value;
+  
+    if (!updateData || !currentUpdateId) {
+      console.error('Missing update data or fragment ID');
+      updateWarning.style.color = 'red';
+      return;
+    }
+  
+    await updateFragment(user, currentUpdateId, newType, updateData);
+  
+    updateWarning.style.color = 'black';
+    updateFileName.innerText = 'No file';
+    updateSection.hidden = true;
+    updateData = '';
+    currentUpdateId = '';
+  
+    // Refresh fragments list
+    await showFragments();
+  });  
 
   // show up all private sections
   userSection.hidden = false;
@@ -71,6 +163,7 @@ async function init() {
   getFragmentsButton.hidden = false;
   fragmentsList.hidden = false;
   noOfFragments.hidden = false;
+  fragmentSection.hidden = false;
 
   showFragments()
 
@@ -93,8 +186,6 @@ async function init() {
       return;
     }
     warning.style.color = 'black';
-    console.log("Content Type:", contentType);
-    console.log("Fragment Data:", fragmentData);
 
     await createFragment(user, contentType, fragmentData);
 
@@ -127,7 +218,6 @@ async function init() {
     // Optionally, use FileReader to read the file content:
     const reader = new FileReader();
     reader.onload = function (e) {
-      // console.log('File content:', e.target.result);
       fragmentData = e.target.result;
     };
     // Read file as text; adjust if you need a different format
