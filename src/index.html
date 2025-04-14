@@ -6,84 +6,35 @@
   <title>Fragments UI</title>
   <link rel="stylesheet" href="https://unpkg.com/bamboo.css" />
 
-  <script type="module" src="./app.js"></script>
-
-  <style>
-    #createFragment {
-      border: ridge black 2px;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    #updateFragment {
-      margin-top: 20px;
-      border: ridge black 2px;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    #selectBox {
-      border: ridge black 1px;
-      margin-bottom: 10px;
-    }
-
-    #textInput {
-      border: ridge black 1px;
-      margin-bottom: 10px;
-    }
-
-    #drop_zone {
-      border: ridge black 1px;
-      width: 100%;
-      height: 100%;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(214, 214, 214);
-      align-content: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    #update_drop_zone {
-      border: ridge black 1px;
-      width: 100%;
-      height: 100%;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      padding: 10px;
-      background-color: rgb(214, 214, 214);
-      align-content: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    #getFragmentsButton {
-      margin: 20px auto;
-    }
-
-    .fragment-item {
-      border: ridge black 1px;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+  <script type="module" src="./app/index.js"></script>
+  <link rel="stylesheet" href="./app.css" />
+  
 </head>
 
 <body>
   <h1>Fragments UI</h1>
+
   <section>
-    <button id="login">Login</button>
+    <button id="login" hidden>Login</button>
     <button id="logout" hidden>Logout</button>
   </section>
   <section hidden id="user">
     <h2>Hello <span class="username"></span>!</h2>
   </section>
-  <section hidden id="createFragment">
-    <form>
+
+  <section id="buttonSection" hidden>
+    <button id="createFragment">Create Fragment</button>
+    <button id="displayFragment">Display</button>
+  </section>
+
+  <section id="displayFragmentSection" hidden>
+    <section id="fragmentData" style="margin-top: 20px;">
+
+    </section>
+  </section>
+
+  <section id="createFragmentSection" hidden>
+    <form id="createForm" style="margin-top: 20px;">
       <h2 style="margin: 0 0 10px">Create a new Fragment</h2>
       <label for="selectBox">Choose an option:</label>
       <select id="selectBox">
@@ -97,39 +48,53 @@
         <option value="image/jpeg">image/jpeg</option>
         <option value="image/webp">image/webp</option>
         <option value="image/avif">image/avif</option>
-        <option value="image/gif">image/gif</option>
+        <option value="image/gif">image/gif</option> 
       </select>
-      <label for="drag&drop">Drop your file here: <span id="fileName">No dropped file</span> </label>
-      <div id="drop_zone">Drop your file here </div>
-      <button type="submit">Submit</button> <span><b id="warning">only one file</b></span>
+      <section id="textFile">
+        <textarea id="textBox" placeholder="Enter fragment text..." rows="5" cols="33"></textarea>
+      </section>
+      <section id="dropFile" hidden>
+        <label for="drop_zone">Drop your file here: <span id="fileName">No dropped file</span> </label>
+        <div id="drop_zone">Drop your file here </div>
+      </section>
+      <button type="submit">Submit</button> </span>
     </form>
   </section>
 
-  <section hidden id="updateFragment">
-    <form>
-      <h2>Update Fragment</h2>
-      <p><strong>ID:</strong> <span id="updateFragmentId"></span></p>
-      <label for="updateSelectBox">Select new content type:</label>
-      <select id="updateSelectBox">
-        <option value="text/plain">text/plain</option>
-        <option value="text/markdown">text/markdown</option>
-        <option value="text/html">text/html</option>
-        <option value="application/json">application/json</option>
-        <option value="image/png">image/png</option>
-        <!-- Add more types as needed -->
-      </select>
-      <label for="update_drop_zone">Drop updated file here: <span id="updateFileName">No file</span></label>
-      <div id="update_drop_zone">Drop your file here</div>
-      <button type="submit">Update Fragment</button> <span><b id="updateWarning">only one file</b></span>
-    </form>
-  </section>
+  <dialog id="editDialog">
+    <h3>Edit Fragment</h3>
+    <p><strong>ID:</strong> <span id="edit-id"></span></p>
+    <p><strong>Type:</strong> <span id="edit-type"></span></p>
+    <div id="editTextSection" style="margin-top: 10px; display: none;">
+      <textarea id="editTextBox" rows="5" style="width: 100%;"></textarea>
+    </div>
+    <div id="editImageSection" style="display: none; margin-top: 10px;">
+      <label for="editDropZone">Drop a new image:</label>
+      <div id="editDropZone" style="border: 2px dashed #aaa; padding: 10px; text-align: center;">
+        Drop image here
+      </div>
+      <p><span id="editFileName">No file selected</span></p>
+    </div>
+    <button id="closeDialogBtn">Cancel</button>
+    <button id="editSubmitBtn" style="margin-top: 8px;">Submit</button>
+  </dialog>
+
+  <dialog id="convertDialog" style="width: 900px; height: 700px; ">
+    <h3>Convert Fragment</h3>
+    <p><strong>ID:</strong> <span id="convert-id"></span></p>
+    <p><strong>Type:</strong> <span id="convert-type"></span></p>
   
-
-  <section id="fragmentSection" hidden>
-    <button id="getFragmentsButton" hidden>Refresh</button> <span id="noOfFragments" hidden></span>
-    <section id="fragmentsList" hidden></section>
-  </section>
-
+    <!-- <label for="convertTo">Convert to:</label> -->
+    <select id="convertTo" style="margin-bottom: 20px; border: black 1px solid"></select>
+  
+    <pre id="convertedOutput" class="pretty-output"></pre>
+  
+    <button id="closeConvertDialogBtn">Close</button>
+    <button id="convertActionBtn">Convert</button>
+  </dialog>
 </body>
 
+
+<script type="module" src="./app/display.js"></script>
+<script type="module" src="./app/create.js"></script>
 </html>
