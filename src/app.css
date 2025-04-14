@@ -1,0 +1,113 @@
+/* === Create Fragment Section === */
+#createFragmentSection {
+    padding: 20px;
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* === Form Heading === */
+#createForm h2 {
+    margin-bottom: 10px;
+    font-size: 1.6rem;
+    color: #333;
+}
+
+/* === Label === */
+#createForm label {
+    display: block;
+    margin: 12px 0 6px;
+    font-weight: 600;
+    color: #555;
+}
+
+/* === Select Box === */
+#selectBox {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* === Textarea === */
+#textBox {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    box-sizing: border-box;
+    margin-top: 10px;
+    display: block;
+}
+
+/* === Drop File Section === */
+#dropFile {
+    margin-top: 15px;
+}
+
+#drop_zone {
+    border: 2px dashed #aaa;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    color: #666;
+    transition: background-color 0.2s ease;
+}
+
+#drop_zone.dragover {
+    background-color: #e0f7fa;
+    border-color: #26a69a;
+    color: #004d40;
+}
+
+/* === Submit Button === */
+#createForm button[type="submit"] {
+    margin-top: 15px;
+    padding: 10px 16px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#createForm button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* === Warning Text === */
+#warning {
+    margin-left: 10px;
+    color: red;
+    font-size: 0.9rem;
+}
+
+/* === File Name Display === */
+#fileName {
+    font-weight: normal;
+    color: #555;
+}
+
+.pretty-output {
+    margin-top: 20px;
+    background-color: #f4f4f8;
+    padding: 16px 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    height: 350px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}

@@ -22,6 +22,7 @@
     "globals": "^16.0.0"
   },
   "dependencies": {
+    "drag-drop": "^7.2.0",
     "oidc-client-ts": "^3.1.0",
     "openid-client": "^6.1.7",
     "parcel": "^2.13.3"
